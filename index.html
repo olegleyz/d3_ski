@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Your next ski vacation in State Salzburg, Austria</title>
+	<style type="text/css">
+		h2 {
+			text-align: center;
+		}
+		h3 {
+			text-align: center;
+		}
+		.bullet { font: 10px sans-serif; }
+		.bullet .marker { stroke: #000; stroke-width: 2px; }
+		.bullet .axis line, .bullet .axis path { stroke: #666; stroke-width: .5px; fill: none; }
+		.bullet .range.s0 { fill: #eee; }
+		.bullet .range.s1 { fill: #ccc; }
+		.bullet .range.s2 { fill: #aaa; }
+		.bullet .measure.s0 { fill: #535353; }
+		.bullet .measure.s1 { opacity: 0; }
+		.bullet .title { font-size: 14px; font-weight: bold; }
+		.bullet .subtitle { fill: #999; }
+		.bullet .tick { fill: #999; }
+	</style>
+	<script src="//d3js.org/d3.v3.min.js"></script>
+	<script src="//d3js.org/topojson.v1.min.js"></script>
+	<script src="colorbrewer.js"></script>
+	<script src="bullet.js"></script>
+	<script type="text/javascript">
+		//set global variables of width and height as the size of the screen
+		var margin = 75,
+			width = window.innerWidth - margin,
+			height = window.innerHeight - margin,
+			svg_height,
+			svg_width,
+			svg,
+			featureCollection,
+			path,
+			centered,
+			h2,
+			h3,
+			sal_obj,
+			topo,
+			color,
+			gridSize, 
+			legendWidth,
+			onClick = 0,
+			sp_price1 = {},
+			sp_price5 = {},
+			dataset = [],
+			pie,tt_arc, chart;
+
+		var mouseover_id, mouseover_id_color;
+		
+		
+		var ski_areas = [],
+			ski_areas_list = [
+				[50618, 50619, 50609, 50625,50611],
+				[50628, 50606, 50602, 50604, 50615, 50616],
+				[70912, 70913, 70940, 50607, 50626],
+				[50614, 50601],
+				[50605, 50613, 50621],
+				[50624],
+				[50617, 50608, 50622],
+				[50610, 50620, 50623, 50627],
+				[50415, 50603, 50612],
+				[50411, 50413],
+				[50402, 50403, 50405],
+				[50408, 50423, 50414, 50418, 50417, 50401, 50406, 50407],
+				[50425, 50416, 50424],
+				[50409],
+				[50422, 50512],
+				[50504],
+				[50203, 50210, 50201],
+				[50206, 50318]
+				];
+
+
+		function clicked(d) {			
+			var x, y, k;
+			if (d && centered !== d) {
+				var centroid = path.centroid(d);
+				x = centroid[0];
+				y = centroid[1];
+				k = 3;
+				centered = d;
+			} else {
+				x = width / 2;
+				y = height / 2;
+				k = 1;
+				centered = null;
+			}			
+			var g = d3.selectAll('g');
+			g.selectAll("path")
+				.classed("active", centered && function(d) { return d === centered; });
+			g.transition()
+				.duration(750)
+				.attr("transform", "translate(" + svg_width / 2 + "," + svg_height / 2 + ")scale(" + k + ")translate(" + -x + "," + -0.95*y + ")")
+				.style("stroke-width", 1.5 / k + "px");
+			}
+
+		
+
+		function sub_header(text) {
+			d3.select("h3")
+				.text(text);
+		}
+				
+		function update_states(states_index, state) {
+			if (states_index===9) {
+				//step# 1 after states introduction
+				sub_header("And State Salzburg is in the middle of it")
+				d3.select("text").remove();
+				svg.selectAll("path")
+					.style("fill","#aaa")
+					.style("stroke-width", 1.5);
+				d3.select("[location=Salzburg]").style("fill","#ddd");
+
+				sal_obj = featureCollection.features[3];	
+//zoon in State Salzburg
+				clicked(sal_obj);
+
+				} else if (states_index===10 || states_index ===11){
+
+				} else if (states_index===12) {
+				//step# 2 after states introduction
+					sub_header("There are 18 skiing areas in State Salzburg. Choose the one you visit next");
+					draw_next();	
+
+				} else {
+			
+				d3.select("text").remove();
+				svg.selectAll("path")
+					.style("fill","#aaa")
+					.style("stroke-width", 1.5);
+
+				svg.select("[location="+state+"]")
+					.transition()
+					.duration(500)
+					.style("fill", "orange")
+					.style("stroke-width", 5.5);
+
+				var centroidX = path.centroid(featureCollection.features[states_index])[0],
+					centroidY = path.centroid(featureCollection.features[states_index])[1];
+				
+				
+				d3.select("svg")
+					.append("text")
+					.text(state);
+
+				var stateHeight = d3.select("text").node().getBoundingClientRect().height,
+					stateWidth = d3.select("text").node().getBoundingClientRect().width;
+
+				d3.select("text").remove();
+				d3.select("svg")
+					.append("text")
+					.text(state)
+					.attr("x", centroidX - stateWidth / 2)
+					.attr("y", centroidY + stateHeight / 2)
+					.style("color", "white");				
+				
+				};
+		};	
+
+		function draw_intro(geo_data, callback) {
+			sub_header("Austria is a federal republic made up of 9 states");
+			draw_map(geo_data);
+			//create an array of states to use during country presentation				
+			var states = [];
+			featureCollection = topojson.feature(geo_data, geo_data.objects[Object.keys(geo_data.objects)[0]]);
+			var arrayLength = featureCollection.features.length;			
+			for (var i = 0; i < arrayLength; i++) {
+			    states.push(featureCollection.features[i].properties.name);			
+			};
+
+			var states_index = 0;
+			var states_interval = setInterval(function(d){
+				update_states(states_index,states[states_index]);
+				states_index++;
+				if (states_index>states.length + 3){
+					clearInterval(states_interval);					
+				}
+			},1000);
+			
+		};
+
+		function draw_map(geo_data, scale = 5000, x = svg_width/2, y = svg_height/2, color = "#aaa", str_w = 1.5) {
+			//check the bounds of the map to identify projection center correctly
+			var loc = Object.keys(geo_data.objects)[0];
+			featureCollection = topojson.feature(geo_data, geo_data.objects[Object.keys(geo_data.objects)[0]]);
+			var bounds = d3.geo.bounds(featureCollection);
+
+			// identify coordinates to set as the center of projection
+			var centerX = d3.sum(bounds, function(d) {return d[0];}) / 2,
+				centerY = d3.sum(bounds, function(d) {return d[1];}) / 2;
+			// set projection mercator with scale, center coordinates and translate to the middle of the screen
+			var projection = d3.geo.mercator()
+								.scale(scale)
+								.center([centerX, centerY])
+								.translate([x, y]);
+
+			path = d3.geo.path()
+						.projection(projection);
+
+			//visualize map
+			var map = d3.select("svg")
+						.append("g")
+						.attr("class", "map")
+						.attr("id", "id_"+loc)
+						.attr("transform", d3.select("g").attr("transform"))
+						.selectAll("path")
+						.data(featureCollection.features)
+						.enter()
+						.append("path")						
+						.attr("location", function(d) {return d.properties.name;})
+						.attr("id", loc)
+						.attr("iso", function(d) {return d.properties.iso;})
+						.attr("d", path)
+						.style("fill", color)
+						.style('stroke','#fff')
+						.style('stroke-width', str_w);
+		};
+		function draw_next() {
+			var temp_list = [];
+			for (var i = 0; i < ski_areas_list.length; i++) {temp_list.push(d3.set(ski_areas_list[i]));}
+
+			d3.json("sal_topo.json", function(error, gem) {
+				if (error) throw error;			
+				topo = gem;
+
+
+
+				draw_map(gem, 5000, svg_width/2 - 27, svg_height/2 + 27, "#ddd", 1);
+				//this is a rectangle which I'm going to use for click events at the end
+				svg.append("rect")
+				    .attr("id", "background")
+				    .attr("width", svg_width)
+				    .attr("height", svg_height)
+				    .style("opacity", 0);
+								
+				d3.select("svg")
+					.append("g")
+					.attr("id","ski")
+					.attr("transform", d3.select("g").attr("transform"));
+
+				var g = svg.select("#ski");
+
+				var groups = g.selectAll("g")
+					.data(ski_areas_list)
+					.enter()
+					.append("g")
+					.attr("class", "ski_area")
+					.attr("id", function(d,i){return i;})
+					.each(addSki);
+
+				function addSki(d) {
+
+					d3.select(this).append("path")
+						.datum(topojson.merge(gem, gem.objects.gemeinden.geometries.filter(function(D) { return d3.set(d).has(D.properties["iso"]); })))
+						.attr("class", "gemeinden selected")
+						.attr("d", path)
+						.style("stroke", "#fff")
+						.style("stroke-width", 1);				
+				}
+				draw_ski();
+				draw_legend();
+				draw_tooltip();
+				});
+		}
+		function draw_tooltip() {
+			var tt = svg.append("g")
+				.attr("id", "tooltip");
+
+			tt.append("rect")
+				.attr("id", "tt_rect")
+				.attr("rx", 12)
+				.attr("ry", 12)
+				.attr("x", svg_width - 300)
+				.attr("y", 25)
+				.attr("width", 275)
+				.attr("height", 100)
+				.attr("opacity", 0.8)
+				.style("fill", '#535353');
+
+			tt.append("text")
+				.text("Ski area")
+				.attr("x", (svg_width - 290 + 275/2))
+				.attr("y", 55)
+				.style("text-anchor", "middle")
+				.style("fill", "#fff")
+				.style("font-weight","bold")
+				.style("font-size","1.1em");
+
+			tt.append("text")
+				.attr("id", "tt_2")
+				.text("Hover over a ski area")
+				.attr("x", (svg_width - 290 + 275/2))
+				.attr("y", 75)
+				.style("text-anchor", "middle")
+				.style("fill", d3.rgb("#fff").darker(1));
+			
+		}
+		function draw_arc() {
+
+				var dataset = [{label: "Black", count: ski_areas[mouseover_id].DiffKM},
+								{label: "Red", count: ski_areas[mouseover_id].MedKM},
+								{label: "Blue", count: ski_areas[mouseover_id].EasyKM}];
+			 
+		        var width = 100;
+		        var height = 100;
+		        var radius = Math.min(width, height) / 2;
+		        var donutWidth = 20;                            // NEW
+
+		        var color = d3.scale.ordinal()
+					.domain(["Red", "Black", "Blue"])
+					.range(["#c0241f","#060606", "#32598d"]);
+ 				
+ 				//made pie global variable to update the arc  
+		        arc = d3.svg.arc()
+		          .innerRadius(radius - donutWidth)             // NEW
+		          .outerRadius(radius);
+		        
+		        //made pie global variable to update the arc  
+				pie = d3.layout.pie()
+		          .value(function(d) { return d.count; })
+		          .sort(null);
+
+		        d3.select("#tooltip").append("text")
+		        	.attr("class","tt_arc")
+		        	.attr("id", "tt_arc_title")
+		        	.text("Slopes")
+		        	.attr("transform", "translate("+(svg_width-220)+","+(160-radius-10)+")")
+		        	.style("text-anchor", "middle")
+			        .attr("fill", "#fff");
+
+		        var path = d3.select("#tooltip").selectAll('path')
+					.data(pie(dataset))
+					.enter()
+					.append('path')
+					.attr("class", "tt_arc")
+					.attr("id", "tt_arc")
+					.attr('d', arc)
+					.attr('fill', function(d, i) {return color(d.data.label);})
+					.attr("transform", "translate("+(svg_width-220)+","+160+")")
+					.each(function(d) {this._current = d; });
+		        
+		        d3.select("#tooltip").append("text")
+			        .attr("class", "tt_arc")
+			        .attr("id","tt_arc_km")
+			        .text(Number(dataset[0].count)+Number(dataset[1].count)+Number(dataset[2].count)+' km')
+			        .attr("transform", "translate("+(svg_width-220)+","+165+")")
+			        .style("text-anchor", "middle")
+			        .attr("fill", "#fff");
+
+			    d3.select("#tooltip").append("text")
+		        	.attr("class", "tt_lift")
+		        	.attr("id", "tt_lift_title")
+		        	.text("Ski lifts")
+		        	.attr("transform", "translate("+(svg_width-100)+","+(160-radius-10)+")")
+		        	.style("text-anchor", "middle")
+			        .attr("fill", "#fff");
+
+			    d3.select("#tooltip")
+			    	.append("image")
+			    	.attr("class", "tt_lift")
+			    	.attr("id", "tt_lift_icon")
+			    	.attr("xlink:href","ski_lift_icon.svg")
+			    	.attr("x", svg_width - 150)
+			    	.attr("y", 110)
+			    	.attr('height', '100')
+					.attr('width', '100')
+					.attr('background', 'red');
+
+				d3.select("#tooltip").append("text")
+		        	.attr("class", "tt_lift")
+		        	.attr("id", "tt_lift_n")
+		        	.text(ski_areas[mouseover_id].Lifts)
+		        	.attr("transform", "translate("+(svg_width-100)+","+205+")")
+		        	.style("text-anchor", "middle")
+			        .attr("fill", "#fff");
+			
+				d3.select("#tooltip").append("text")
+		        	.attr("class", "tt_price")
+		        	.attr("id", "tt_price_title")
+		        	.text("Ski pass prices")
+		        	.attr("transform", "translate("+(svg_width-300 + 275/2)+","+235+")")
+		        	.style("text-anchor", "middle")
+			        .attr("fill", "#fff");
+
+
+//draw bullets
+				var margin = {top: 5, right: 40, bottom: 20, left: 120},
+				    width = 180,// - margin.left - margin.right,
+   					height = 40 - margin.top - margin.bottom;
+
+				chart = d3.bullet()
+				    .orient("left")
+				    .width(width)
+				    .height(height);
+
+				var data = [
+								{"title":"1 day",
+								"subtitle":"EUR",
+								"ranges":[sp_price1.min,sp_price1.max,sp_price1.max], 
+								"measures" : [ski_areas[mouseover_id].PriceH1,ski_areas[mouseover_id].PriceH1], 
+								"markers":[sp_price1.avg]},
+
+								{"title":"5 day", 
+								"subtitle":"EUR",
+								"ranges":[sp_price5.min,sp_price5.max,sp_price5.max],
+								"measures":[ski_areas[mouseover_id].PriceH5,ski_areas[mouseover_id].PriceH5],
+								"markers":[sp_price5.avg]}							
+							];
+					
+				d3.json("", function(error, data1) {
+				
+				var bullet_chart = d3.select("#tooltip")
+			  						.append("g")
+			  						.attr("class", "bullet")
+									.selectAll("g")
+									.data(data)
+									.enter().append("g")
+									.attr("id", "tt_bul")
+									.attr("class", "bullet")  
+									.attr("width", 100)
+									.attr("height", height + margin.top + margin.bottom)
+									.attr("transform", function(d,i) {
+										return "translate("+(svg_width-300 + 65)+","+(280+(i-1)*35)+")"})
+									.call(chart);
+							
+
+			  var title = bullet_chart.append("g")
+			      .style("text-anchor", "end")
+			      .attr("transform", function(d,i) {return "translate("+ (-5)+","+(10+(i-1)*1)+")"})
+			      .style("fill","#fff")
+
+			  title.append("text")
+			      .attr("class", "title")
+			      .text(function(d) { return d.title; });
+
+			  title.append("text")
+			      .attr("class", "subtitle")
+			      .attr("dy", "1.2em")
+			      .text(function(d) { return d.subtitle; });
+				      	})
+//end of bullets
+		}
+		
+
+		function draw_legend() {
+			// legend inspired by http://bl.ocks.org/ilanman/9598445
+			var legend = svg.append("g")
+							.attr("class", "legend");
+
+			legend.append("rect")
+				.attr("rx", 12)
+				.attr("ry", 12)
+				.attr("x", svg_width - 140)
+				.attr("y", svg_height - 140)
+				.attr("width", 115)
+				.attr("height", 115)
+				.attr("opacity", 0.8)
+				.style("fill", "#535353");
+
+			var legend_c = legend.selectAll(".legend")
+						.data(colorbrewer.YlOrBr[4])
+						.enter()
+						.append("g")
+						.attr("class","legend");
+			
+			gridSize = 35;
+			legendWidth = (gridSize / 2) + 4;
+			legend_text = ['<50k', '50 - 400k', '400 - 2000k', '>2000k'];
+
+			legend_c.append("rect")
+						.attr("x", svg_width - 130)
+						.attr("y", function(d,i) {return (svg_height - 130 + gridSize/2 + i*(gridSize/2+2));})
+						.attr("width", gridSize/2)
+						.attr("height",gridSize/2)
+						.style("fill",function(d){return d})
+						.attr("class", "square");
+
+			legend_c.append("text")
+						.attr("class", "mono")
+						.text(function(d,i) {return legend_text[i];})
+						.attr("x", svg_width - 125 + gridSize/2)
+						.attr("y", function(d,i) {return (svg_height - 135 + gridSize + i*(gridSize/2+2));})
+						.style("fill", "#fff");
+
+			legend.append("text")
+						.attr("class", "mono")
+						.attr("x", svg_width - 134)
+						.attr("y", svg_height - 120)
+						.text("# of nights spent")
+						.style("fill", "#fff");
+
+		}
+
+		function draw_ski() {
+			
+			d3.tsv("ski_areas.tsv", function(error,ski_areas_data) {
+				if (error) throw error;
+
+				for (var i=0; i<ski_areas_list.length; i++) {
+					ski_areas[i] = {};
+					ski_areas[i]['loc'] = ski_areas_list[i];
+					for (key in ski_areas_data[i]) {
+						ski_areas[i][key] = ski_areas_data[i][key];
+					}					
+				}
+
+				var	sp_price1_list = [],
+					sp_price5_list = [];
+
+				for (i=0; i<ski_areas.length; i++) {
+					sp_price1_list.push(ski_areas[i]['PriceH1']);
+					sp_price5_list.push(ski_areas[i]['PriceH5']);
+				}
+				
+				sp_price1 = {
+								"min": Math.min.apply(null, sp_price1_list),
+								"avg": Math.round(sp_price1_list.reduce(function(a, b) { 
+									return Number(a) + Number(b); 
+								}, 0) / sp_price1_list.length),
+								"max": Math.max.apply(null,sp_price1_list)
+							}
+				sp_price5 = {
+								"min": Math.min.apply(null, sp_price5_list),
+								"avg": Math.round(sp_price5_list.reduce(function(a, b) { 
+									return Number(a) + Number(b); 
+								}, 0) / sp_price5_list.length),
+								"max": Math.max.apply(null,sp_price5_list)
+							}
+
+			    color = d3.scale.threshold()
+				      .domain([50000, 400000, 2000000]) 
+				      .range(colorbrewer.YlOrBr[4]);
+
+				d3.select("#ski")
+					.style("fill","#ffffe5")
+					.transition()
+					.duration(1000)
+					.selectAll("g")
+					.style("fill", function() {
+						return color(ski_areas[d3.select(this).attr('id')]['Nights']);});
+
+				//on click on the background I'm cancelling all highlights
+				d3.select("#background")
+				    .on("click", function(){
+				    	//change the size of the tooltip
+				    	reset_ski();
+				    });
+
+				function reset_ski() {
+					d3.select("#tt_rect")
+							.transition()
+							.duration(500)
+							.attr("height", 100);
+					//change the stroke-width of clicked ski area
+					d3.select("g[id='" + mouseover_id + "']")
+						.select("path")
+						.style("stroke-width", 1.5);
+					//change the text in tooltip
+					d3.select("#tt_2")
+							.text("Hover over a ski area")
+							.style("fill", d3.rgb("#fff").darker(1));
+					//change the color of clicked ski area
+					d3.select("g[id='" + mouseover_id + "']").style("fill",mouseover_id_color);
+					//remove arc from tooltip
+					d3.select("#tooltip").selectAll("#tt_arc").remove();
+					d3.select("#tooltip").selectAll("#tt_bul").remove();
+					
+					//remove ski lifts
+					d3.selectAll(".tt_lift").remove();
+					//remove slopes arc
+					d3.selectAll(".tt_arc").remove();
+					d3.selectAll(".tt_price").remove();
+					onClick = 0;
+
+				}
+				function click_ski() {
+					onClick = 1;
+					d3.select("#tt_2")
+						.text(ski_areas[mouseover_id].Area)
+						.style("fill", "orange");
+					d3.select("#tt_rect")
+						.transition()
+						.duration(500)
+						.attr("height", 300)
+						.each("end",draw_arc);
+					//.each works as callback, draw_arc called after transition
+
+				}
+				d3.selectAll(".ski_area")
+					.on('mouseover', function(){
+						if (onClick === 0) {
+							mouseover_id = d3.select(this).attr("id");
+							mouseover_id_color = d3.select(this).style('fill');
+							d3.select("#tt_2")
+								.text(ski_areas[mouseover_id].Area)
+								.style("fill", "orange");
+							d3.select(this).select("path").style("stroke-width", 3.5);
+							d3.select(this).style("fill", function(){
+								return d3.rgb(d3.select(this).style('fill')).darker(1);})}})
+					.on('mouseout', function(){
+						if (onClick === 0) {
+							d3.select("#tt_2")
+								.text("Hover over a ski area")
+								.style("fill", d3.rgb("#fff").darker(1));
+							d3.select("g[id='" + mouseover_id + "']")
+								.select("path")
+								.style("stroke-width", 1.5);
+							d3.select("g[id='" + mouseover_id + "']").style("fill",mouseover_id_color);}})
+					.on('click', function () {
+						if (onClick === 0) {
+							click_ski();
+						} else {
+
+							if (d3.select(this).attr("id") !== mouseover_id) {
+								
+//reset ski							
+								//change the stroke-width of clicked ski area
+								d3.select("g[id='" + mouseover_id + "']")
+									.select("path")
+									.style("stroke-width", 1.5);
+							
+								//change the color of clicked ski area
+								d3.select("g[id='" + mouseover_id + "']").style("fill",mouseover_id_color);
+							
+//reset ski end
+							mouseover_id = d3.select(this).attr("id");
+							mouseover_id_color = d3.select(this).style('fill');
+
+							dataset = [{label: "Black", count: ski_areas[mouseover_id].DiffKM},
+										{label: "Red", count: ski_areas[mouseover_id].MedKM},
+										{label: "Blue", count: ski_areas[mouseover_id].EasyKM}]
+										
+							d3.select(this).select("path").style("stroke-width", 3.5);
+							d3.select(this).style("fill", function(){
+								return d3.rgb(d3.select(this).style('fill')).darker(1);})
+//click area
+							
+							d3.select("#tt_2")
+								.transition()
+								.duration(500)
+								.text(ski_areas[mouseover_id].Area)
+								.style("fill", "orange");
+							
+//click area end									
+
+//change # of lifts
+							d3.select("#tt_lift_n")
+								.transition()
+								.duration(500)
+								.text(ski_areas[mouseover_id].Lifts);
+
+//change length of slopes
+							d3.select("#tt_arc_km")
+								.transition()
+								.duration(500)
+								.text(Number(dataset[0].count)+Number(dataset[1].count)+Number(dataset[2].count)+' km');
+//update arc
+							d3.select("#tooltip").selectAll("path").data(pie(dataset)).transition().duration(500)
+								.attrTween("d", arcTween);
+							function arcTween(a) {
+								var i = d3.interpolate(this._current, a);
+								this._current = i(0);
+								return function(t) {
+									return arc(i(t));
+							  };
+							}
+//update bullets
+							var data = [
+								{"title":"1 day",
+								"subtitle":"EUR",
+								"ranges":[sp_price1.min,sp_price1.max,sp_price1.max], 
+								"measures" : [ski_areas[mouseover_id].PriceH1,ski_areas[mouseover_id].PriceH1], 
+								"markers":[sp_price1.avg]},
+
+								{"title":"5 day", 
+								"subtitle":"EUR",
+								"ranges":[sp_price5.min,sp_price5.max,sp_price5.max],
+								"measures":[ski_areas[mouseover_id].PriceH5,ski_areas[mouseover_id].PriceH5],
+								"markers":[sp_price5.avg]}				
+							];
+						
+								d3.selectAll("#tt_bul").data(data).transition().duration(500).call(chart);
+
+							}
+						}
+
+					});
+					
+			})
+			
+		};
+		
+		function draw(geo_data) {				
+			//set the header of the page
+			h2 = d3.select("body")
+				.append("h2")
+				.text("Your next ski vacation in State Salzburg, Austria");
+			h3 = d3.select("body")
+				.append("h3")
+				.text("Austria is a federal republic made up of 9 states");
+			var h2_height = h2.node().getBoundingClientRect().height,
+				h3_height = h3.node().getBoundingClientRect().height;
+			
+			//add svg on the page with the size of the screen's size
+			svg_height = height - h2_height - h3_height;
+			svg_width = (width+margin*0.8);
+			
+			svg = d3.select("body")
+						.append("svg")
+						.attr("width", svg_width)
+						.attr("height", svg_height);
+						
+			draw_intro(geo_data, draw_next);
+		};
+	</script>
+</head>
+<body>
+	<script type="text/javascript">
+		d3.json("oesterreich.json", function(error,at){
+			if (error) throw error;
+			draw(at);
+		});
+
+
+	</script>
+</body>
+</html>
