@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg12385"
+   sodipodi:version="0.32"
+   inkscape:version="0.46+pre4"
+   sodipodi:docname="chair lift ski lift black.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs12387">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective12393" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="282.59269"
+     inkscape:cy="520"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="938"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata12390">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Other map symbols</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Mohamed Ibrahim</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Public Domain</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>clker.com</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>other map symbols</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="M 116.6193,54.480633 C 78.723305,54.480633 47.832111,85.371827 47.832111,123.26783 L 47.832111,650.09927 C 47.832111,687.92522 78.723305,718.74636 116.6193,718.74636 L 643.3807,718.74636 C 681.2767,718.74636 712.16789,687.92522 712.16789,650.09927 L 712.16789,123.26783 C 712.16789,85.371827 681.2767,54.480633 643.3807,54.480633 L 116.6193,54.480633 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4148" />
+    <path
+       d="M 643.3807,732.75597 C 689.12208,732.75597 726.1775,695.84065 726.1775,650.09927 L 726.1775,123.26783 C 726.1775,77.526444 689.12208,40.471022 643.3807,40.471022 L 116.6193,40.471022 C 70.94797,40.471022 33.8225,77.526444 33.8225,123.26783 L 33.8225,650.09927 C 33.8225,695.84065 70.94797,732.75597 116.6193,732.75597 L 643.3807,732.75597 z"
+       style="fill:#231f20;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4150" />
+    <path
+       d="M 637.63676,530.10694 C 660.54247,522.6118 672.80088,498.09498 665.30574,475.25931 L 648.7744,480.58297 C 653.25747,494.31239 645.76233,509.02248 632.17301,513.5756 L 196.89438,661.86734 L 202.49822,678.32863 L 637.63676,530.10694 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4152" />
+    <path
+       d="M 236.89182,273.87115 C 260.77821,266.86634 274.43758,241.71909 267.43277,217.76266 C 260.49801,193.80622 235.35076,180.14685 211.39433,187.15165 C 187.50794,194.08641 173.63842,219.30371 180.78332,243.26015 C 187.78813,267.14654 212.79529,280.87596 236.89182,273.87115"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4154" />
+    <path
+       d="M 218.39913,336.56416 C 194.58279,291.10297 262.9497,254.32774 288.09695,298.38797 L 337.20064,391.69198 L 430.64475,365.14377 C 446.12537,360.73074 467.49002,377.61232 467.49002,397.43592 L 468.05041,530.38714 C 468.12046,563.37977 419.15686,563.51987 419.15686,530.10694 C 419.01677,499.21575 418.24624,433.23048 418.24624,433.23048 L 320.6693,462.51057 C 299.30464,468.6748 281.65253,458.02749 273.31681,442.26668 L 218.39913,336.56416 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4156" />
+    <path
+       d="M 369.49279,357.57858 L 369.49279,77.106156 L 349.94938,77.106156 L 349.94938,362.97228 L 369.49279,357.57858 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4158" />
+    <path
+       d="M 173.49833,397.15573 C 160.11915,370.74761 194.72289,353.2356 208.17212,379.64372 L 250.34105,462.30042 C 259.51734,479.39215 277.44964,491.02013 298.11382,491.02013 C 304.55824,491.02013 310.51233,489.33897 316.39636,488.14816 L 369.63289,472.52744 C 397.86225,464.05163 408.78975,501.24714 380.35024,509.58286 L 324.38184,525.90406 C 316.04612,528.49584 307.00992,529.82675 297.69353,529.82675 C 261.68883,529.82675 230.58749,509.44277 215.24697,479.67234 L 173.49833,397.15573 z"
+       style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path4160" />
+  </g>
+</svg>
