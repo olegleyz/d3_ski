@@ -13,15 +13,15 @@ In the project I've used different visualization elements such as: maps, rectang
    
 ###Feedback   
 I've gotten the number of interesting feedbacks on the project. To group recommendations, viewers recommended to explain the metrices and graphics; change user experience (colors / scales); add more data; formalize outcomes; improve the code formatting. The text of all feedbacks are in the bottom of this document.  
-What was implemented based on the feedbacks:
-1. Outcomes were visualized.
-2. Explanation of the data / charts were added to the tooltip under the question mark.
-3. Zoom was added to remind the viewer where the ski area is on the map of the country.
-4. Code formatting was improved according to https://github.com/felixge/node-style-guide#2-spaces-for-indentation. The indentation was unified and changed to two spaces; 80 characters per line; single quotes; lowerCamelCase for variables and function names.
-What was not implemented:
-1.  Additional data was not added. Great that viewers were interested to get more and more data to the visualization. As there are already data from disperate sources, and perfection is not the key goal of this project, no new information were added.  
-2.  Legend switch to color the map based on different metrices. The same idea as in p.1
-3. Colors of the map polygons and borders. There was not enough information to identify if there was a problem in coloring or question of taste.
+####What was implemented based on the feedbacks:
+1. Outcomes were visualized.   
+2. Explanation of the data / charts were added to the tooltip under the question mark.    
+3. Zoom was added to remind the viewer where the ski area is on the map of the country.    
+4. Code formatting was improved according to https://github.com/felixge/node-style-guide#2-spaces-for-indentation. The indentation was unified and changed to two spaces; 80 characters per line; single quotes; lowerCamelCase for variables and function names.    
+####What was not implemented:    
+1.  Additional data was not added. Great that viewers were interested to get more and more data to the visualization. As there are already data from disperate sources, and perfection is not the key goal of this project, no new information were added.   
+2.  Legend switch to color the map based on different metrices. The same idea as in p.1.    
+3. Colors of the map polygons and borders. There was not enough information to identify if there was a problem in coloring or question of taste.    
    
 ###Resources   
 1.  https://bost.ocks.org/mike/   
