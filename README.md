@@ -21,6 +21,7 @@ What was implemented based on the feedbacks:
 What was not implemented:
 1.  Additional data was not added. Great that viewers were interested to get more and more data to the visualization. As there are already data from disperate sources, and perfection is not the key goal of this project, no new information were added.  
 2.  Legend switch to color the map based on different metrices. The same idea as in p.1
+3. Colors of the map polygons and borders. There was not enough information to identify if there was a problem in coloring or question of taste.
    
 ###Resources   
 1.  https://bost.ocks.org/mike/   
